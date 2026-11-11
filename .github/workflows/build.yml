@@ -47,6 +47,13 @@ jobs:
           grep -q 'import java.util.Comparator;' workspace/WorldBattlesTextureLock-Source/src/main/java/com/worldbattles/texturelock/client/PackInstaller.java || \
             sed -i '/import java.util.Collections;/a import java.util.Comparator;' workspace/WorldBattlesTextureLock-Source/src/main/java/com/worldbattles/texturelock/client/PackInstaller.java
 
+      - name: Target server Forge 47.4.10
+        shell: bash
+        working-directory: workspace/WorldBattlesTextureLock-Source
+        run: |
+          sed -i 's/47.4.28/47.4.10/g' build.gradle src/main/resources/META-INF/mods.toml
+          grep -n '47.4.10' build.gradle src/main/resources/META-INF/mods.toml
+
       - name: Build mod
         shell: bash
         working-directory: workspace/WorldBattlesTextureLock-Source
