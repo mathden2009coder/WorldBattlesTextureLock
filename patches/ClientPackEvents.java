@@ -3,7 +3,6 @@ package com.worldbattles.texturelock.client;
 import com.worldbattles.texturelock.WorldBattlesTextureLock;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraftforge.api.distmarker.Dist;
@@ -32,18 +31,9 @@ public final class ClientPackEvents {
                 Path path = ClientPackManager.combinedPackPath();
                 if (!Files.isDirectory(path) || !ClientPackManager.isReady()) return;
 
-                // Forge 47.4.x uses its own PathPackResources implementation.
-                Pack.ResourcesSupplier supplier = new Pack.ResourcesSupplier() {
-                    @Override
-                    public PackResources openPrimary(String packId) {
-                        return new PathPackResources(packId, true, path);
-                    }
-
-                    @Override
-                    public PackResources openFull(String packId, Pack.Info info) {
-                        return new PathPackResources(packId, true, path);
-                    }
-                };
+                // Forge 47.4.x ResourcesSupplier is a single-method interface.
+                Pack.ResourcesSupplier supplier =
+                        packId -> new PathPackResources(packId, true, path);
 
                 Pack.Info info = Pack.readPackInfo(ClientPackManager.PACK_ID, supplier);
                 if (info == null) {
