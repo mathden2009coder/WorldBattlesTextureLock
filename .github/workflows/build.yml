@@ -1,0 +1,61 @@
+name: Build WorldBattles Texture Lock
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Forge 1.20.1 mod
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle 8.8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.8'
+
+      - name: Rebuild and verify source archive
+        shell: bash
+        run: |
+          cat source-archive/part-*.b64 > source-archive/source.zip.b64
+          base64 --decode source-archive/source.zip.b64 > source-archive/source.zip
+          echo "Archive bytes: $(stat -c%s source-archive/source.zip)"
+          unzip -t source-archive/source.zip
+          unzip -q source-archive/source.zip -d workspace
+          test -f workspace/WorldBattlesTextureLock-Source/build.gradle
+
+      - name: Apply Java import fix
+        shell: bash
+        working-directory: workspace/WorldBattlesTextureLock-Source
+        run: |
+          grep -q 'import java.util.Comparator;' src/main/java/com/worldbattles/texturelock/client/PackInstaller.java || \
+            sed -i '/import java.util.Collections;/a import java.util.Comparator;' src/main/java/com/worldbattles/texturelock/client/PackInstaller.java
+
+      - name: Build mod
+        shell: bash
+        working-directory: workspace/WorldBattlesTextureLock-Source
+        run: gradle --no-daemon clean build --stacktrace
+
+      - name: Upload compiled JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: WorldBattlesTextureLock-1.0.0
+          path: workspace/WorldBattlesTextureLock-Source/build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
