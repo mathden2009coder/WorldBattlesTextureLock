@@ -40,12 +40,12 @@ jobs:
           unzip -q source-archive/source.zip -d workspace
           test -f workspace/WorldBattlesTextureLock-Source/build.gradle
 
-      - name: Apply Java import fix
+      - name: Apply Forge 47.4.28 compatibility patches
         shell: bash
-        working-directory: workspace/WorldBattlesTextureLock-Source
         run: |
-          grep -q 'import java.util.Comparator;' src/main/java/com/worldbattles/texturelock/client/PackInstaller.java || \
-            sed -i '/import java.util.Collections;/a import java.util.Comparator;' src/main/java/com/worldbattles/texturelock/client/PackInstaller.java
+          cp patches/ClientPackEvents.java workspace/WorldBattlesTextureLock-Source/src/main/java/com/worldbattles/texturelock/client/ClientPackEvents.java
+          grep -q 'import java.util.Comparator;' workspace/WorldBattlesTextureLock-Source/src/main/java/com/worldbattles/texturelock/client/PackInstaller.java || \
+            sed -i '/import java.util.Collections;/a import java.util.Comparator;' workspace/WorldBattlesTextureLock-Source/src/main/java/com/worldbattles/texturelock/client/PackInstaller.java
 
       - name: Build mod
         shell: bash
