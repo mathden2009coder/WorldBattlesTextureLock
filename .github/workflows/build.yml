@@ -47,32 +47,32 @@ jobs:
           grep -q 'import java.util.Comparator;' workspace/WorldBattlesTextureLock-Source/src/main/java/com/worldbattles/texturelock/client/PackInstaller.java || \
             sed -i '/import java.util.Collections;/a import java.util.Comparator;' workspace/WorldBattlesTextureLock-Source/src/main/java/com/worldbattles/texturelock/client/PackInstaller.java
 
-      - name: Target and verify server Forge 47.4.10
+      - name: Target and verify server Forge 47.4.28
         shell: bash
         working-directory: workspace/WorldBattlesTextureLock-Source
         run: |
-          sed -i 's/47.4.28/47.4.10/g' build.gradle src/main/resources/META-INF/mods.toml
-          grep -n '47.4.10' build.gradle src/main/resources/META-INF/mods.toml
-          grep -F 'versionRange="[47.4.10,' src/main/resources/META-INF/mods.toml
+          sed -i 's/47.4.10/47.4.28/g' build.gradle src/main/resources/META-INF/mods.toml
+          grep -n '47.4.28' build.gradle src/main/resources/META-INF/mods.toml
+          grep -F 'versionRange="[47.4.28,' src/main/resources/META-INF/mods.toml
 
       - name: Build mod
         shell: bash
         working-directory: workspace/WorldBattlesTextureLock-Source
         run: gradle --no-daemon clean build --stacktrace
 
-      - name: Name Forge 47.4.10 JAR
+      - name: Name Forge 47.4.28 JAR
         shell: bash
         working-directory: workspace/WorldBattlesTextureLock-Source
         run: |
           jar_file="$(find build/libs -maxdepth 1 -type f -name '*.jar' ! -name '*-sources.jar' | head -n 1)"
           test -n "$jar_file"
-          mv "$jar_file" build/libs/WorldBattlesTextureLock-Forge-47.4.10.jar
-          unzip -p build/libs/WorldBattlesTextureLock-Forge-47.4.10.jar META-INF/mods.toml | grep -F '47.4.10'
+          mv "$jar_file" build/libs/WorldBattlesTextureLock-Forge-47.4.28.jar
+          unzip -p build/libs/WorldBattlesTextureLock-Forge-47.4.28.jar META-INF/mods.toml | grep -F '47.4.28'
 
       - name: Upload compiled JAR
         uses: actions/upload-artifact@v4
         with:
-          name: WorldBattlesTextureLock-Forge-47.4.10
-          path: workspace/WorldBattlesTextureLock-Source/build/libs/WorldBattlesTextureLock-Forge-47.4.10.jar
+          name: WorldBattlesTextureLock-Forge-47.4.28
+          path: workspace/WorldBattlesTextureLock-Source/build/libs/WorldBattlesTextureLock-Forge-47.4.28.jar
           if-no-files-found: error
           retention-days: 30
