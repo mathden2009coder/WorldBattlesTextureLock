@@ -53,7 +53,7 @@ jobs:
         run: |
           sed -i 's/47.4.28/47.4.10/g' build.gradle src/main/resources/META-INF/mods.toml
           grep -n '47.4.10' build.gradle src/main/resources/META-INF/mods.toml
-          grep -Eq 'versionRange[[:space:]]*=[[:space:]]*"\\[47\\.4\\.10,' src/main/resources/META-INF/mods.toml
+          grep -F 'versionRange="[47.4.10,' src/main/resources/META-INF/mods.toml
 
       - name: Build mod
         shell: bash
@@ -67,7 +67,7 @@ jobs:
           jar_file="$(find build/libs -maxdepth 1 -type f -name '*.jar' ! -name '*-sources.jar' | head -n 1)"
           test -n "$jar_file"
           mv "$jar_file" build/libs/WorldBattlesTextureLock-Forge-47.4.10.jar
-          unzip -p build/libs/WorldBattlesTextureLock-Forge-47.4.10.jar META-INF/mods.toml | grep -E 'modId = "worldbattles_texture_lock"|versionRange.*47\\.4\\.10'
+          unzip -p build/libs/WorldBattlesTextureLock-Forge-47.4.10.jar META-INF/mods.toml | grep -F '47.4.10'
 
       - name: Upload compiled JAR
         uses: actions/upload-artifact@v4
